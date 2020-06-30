@@ -7,7 +7,7 @@ package sorteionomes;
 
 /**
  *
- * @author marcelo
+ * @author marcelo vergara
  */
 public class SorteioNomes {
 
@@ -18,5 +18,5 @@ public class SorteioNomes {
         TelaPrincipal tp = new TelaPrincipal();
         tp.setVisible(true);
     }
-    
+
 }
