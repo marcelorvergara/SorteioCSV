@@ -5,6 +5,8 @@
  */
 package sorteionomes;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +34,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
      */
     public TelaPrincipal() {
         initComponents();
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
     /**
@@ -75,7 +79,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         txtGanhador.setFont(new java.awt.Font("DejaVu Serif", 3, 36)); // NOI18N
-        txtGanhador.setText("nome");
 
         javax.swing.GroupLayout jPanelParentLayout = new javax.swing.GroupLayout(jPanelParent);
         jPanelParent.setLayout(jPanelParentLayout);
@@ -84,17 +87,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
             .addGroup(jPanelParentLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelParentLayout.createSequentialGroup()
-                        .addGap(134, 134, 134)
-                        .addComponent(txtGanhador)
-                        .addContainerGap(190, Short.MAX_VALUE))
+                    .addComponent(txtArqNome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanelParentLayout.createSequentialGroup()
                         .addGroup(jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelParentLayout.createSequentialGroup()
+                                .addGap(134, 134, 134)
+                                .addComponent(txtGanhador))
                             .addComponent(jLabel1)
                             .addComponent(btnAbrirArq)
                             .addComponent(btnSortear))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(txtArqNome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap(322, Short.MAX_VALUE))))
         );
         jPanelParentLayout.setVerticalGroup(
             jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,7 +109,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(txtArqNome)
                 .addGap(31, 31, 31)
                 .addComponent(btnSortear)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addComponent(txtGanhador)
                 .addGap(45, 45, 45))
         );
@@ -116,7 +118,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanelParent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
