@@ -5,6 +5,8 @@
  */
 package sorteionomes;
 
+import java.io.IOException;
+
 /**
  *
  * @author marcelo vergara
@@ -13,8 +15,9 @@ public class SorteioNomes {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         TelaPrincipal tp = new TelaPrincipal();
         tp.setVisible(true);
     }

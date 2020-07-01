@@ -5,21 +5,30 @@
  */
 package sorteionomes;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,15 +36,29 @@ import javax.swing.JPanel;
  */
 public class TelaPrincipal extends javax.swing.JFrame {
 
-    File file;
+    File file = null;
 
     /**
      * Creates new form TelaPrincipal
+     *
+     * @throws java.io.FileNotFoundException
      */
-    public TelaPrincipal() {
+    public TelaPrincipal() throws FileNotFoundException, IOException {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+        //firebase
+        FileInputStream serviceAccount;
+
+        serviceAccount = new FileInputStream("./src/sorteio-c520b-firebase-adminsdk-aalga-3a1650b039.json");
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl("https://sorteio-c520b.firebaseio.com")
+                .build();
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseApp.initializeApp(options);
+        }
+
     }
 
     /**
@@ -54,10 +77,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
         txtArqNome = new javax.swing.JLabel();
         btnSortear = new javax.swing.JButton();
         txtGanhador = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        edtNomeSorteio = new javax.swing.JTextField();
+
+        jFileChooser.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sorteio de Nomes");
+        setBackground(new java.awt.Color(102, 102, 255));
+        setForeground(new java.awt.Color(102, 102, 255));
+        setResizable(false);
+        setSize(new java.awt.Dimension(250, 190));
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jPanelParent.setBackground(new java.awt.Color(153, 153, 255));
+        jPanelParent.setBorder(new javax.swing.border.MatteBorder(null));
+
+        jLabel1.setFont(new java.awt.Font("DialogInput", 1, 24)); // NOI18N
         jLabel1.setText("Escolha um arquivo:");
         jLabel1.setToolTipText("");
 
@@ -69,7 +104,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         txtArqNome.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        txtArqNome.setText("Nome do Arquivo");
+        txtArqNome.setText("<<Nome do Arquivo>>");
 
         btnSortear.setText("Sortear");
         btnSortear.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -79,48 +114,63 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         txtGanhador.setFont(new java.awt.Font("DejaVu Serif", 3, 36)); // NOI18N
+        txtGanhador.setForeground(new java.awt.Color(0, 204, 0));
+        txtGanhador.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtGanhador.setText("<<ganhador>>");
+        txtGanhador.setBorder(new javax.swing.border.MatteBorder(null));
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setText("Nome do Sorteio:");
+
+        edtNomeSorteio.setColumns(200);
+        edtNomeSorteio.setToolTipText("Nome sorteio");
 
         javax.swing.GroupLayout jPanelParentLayout = new javax.swing.GroupLayout(jPanelParent);
         jPanelParent.setLayout(jPanelParentLayout);
         jPanelParentLayout.setHorizontalGroup(
             jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtGanhador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanelParentLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtArqNome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanelParentLayout.createSequentialGroup()
                         .addGroup(jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelParentLayout.createSequentialGroup()
-                                .addGap(134, 134, 134)
-                                .addComponent(txtGanhador))
-                            .addComponent(jLabel1)
                             .addComponent(btnAbrirArq)
+                            .addComponent(jLabel1))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanelParentLayout.createSequentialGroup()
+                        .addGroup(jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(edtNomeSorteio, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .addComponent(btnSortear))
-                        .addContainerGap(322, Short.MAX_VALUE))))
+                        .addGap(224, 224, 224))))
         );
         jPanelParentLayout.setVerticalGroup(
             jPanelParentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelParentLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addGap(20, 20, 20)
                 .addComponent(btnAbrirArq)
-                .addGap(33, 33, 33)
+                .addGap(18, 18, 18)
                 .addComponent(txtArqNome)
-                .addGap(31, 31, 31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(edtNomeSorteio, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                .addGap(33, 33, 33)
                 .addComponent(btnSortear)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtGanhador)
-                .addGap(45, 45, 45))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanelParent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanelParent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,6 +178,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAbrirArqMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirArqMouseReleased
@@ -142,37 +193,81 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAbrirArqMouseReleased
 
     private void btnSortearMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSortearMouseReleased
-        List<String[]> content = new ArrayList<>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                content.add(line.split(","));
-            }
-        } catch (FileNotFoundException e) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, e);
-        } catch (IOException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
-        Random rand = new Random();
-        int upperbound = content.size();
-        int intRandom = rand.nextInt(upperbound);
-        int j = 0;
+        if (file != null) {
+            if (edtNomeSorteio.getText().isEmpty()) {
+                Component frame = null;
+                JOptionPane.showMessageDialog(frame,
+                        "Favor inserir um nome para o sorteio.");
+            } else if ((edtNomeSorteio.getText().contains("."))
+                    || (edtNomeSorteio.getText().contains("!"))
+                    || (edtNomeSorteio.getText().contains("@"))
+                    || (edtNomeSorteio.getText().contains("#"))
+                    || (edtNomeSorteio.getText().contains("$"))
+                    || (edtNomeSorteio.getText().contains("%"))
+                    || (edtNomeSorteio.getText().contains("%"))
+                    || (edtNomeSorteio.getText().contains("&"))
+                    || (edtNomeSorteio.getText().contains("*"))
+                    || (edtNomeSorteio.getText().contains(","))) {
 
-        String[] myArray;
-        if (content.size() > 0) {
-            Iterator<String[]> i = content.iterator();
-            while (i.hasNext()) {
-                myArray = i.next();
-                for (String s : myArray) {
-                    if (j == intRandom) {
-                        txtGanhador.setText(s);
+                Component frame = null;
+                JOptionPane.showMessageDialog(frame,
+                        "Favor não usar símbolos.");
+
+            } else {
+                //decompondo o csv em linhas 
+                List<String> contents = new ArrayList<>();
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    String line = "";
+                    while ((line = br.readLine()) != null) {
+                        contents.add(line);
                     }
-
+                } catch (FileNotFoundException e) {
+                    Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, e);
+                } catch (IOException ex) {
+                    Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                j += 1;
+                //pegando um número randomico
+                Random rand = new Random();
+                int upperbound = contents.size();
+                int intRandom = rand.nextInt(upperbound);
+                //pegando a linha do arquivo de acordo com o número sorteado
+                for (int j = 0; contents.size() > 0; j++) {
+                    if (j == intRandom) {
+                        txtGanhador.setText(contents.get(j));
+                        break;
+                    }
+                }
+                String nome = edtNomeSorteio.getText();
+                LocalDateTime now = java.time.LocalDateTime.now();
+                String data = now.toString().replace("-", "").substring(0, 11);
+                String id = nome + data;
+                String ganhador = txtGanhador.getText();
+
+                FireBaseResult objResult = new FireBaseResult();
+                objResult.setId(id);
+                objResult.setNome(edtNomeSorteio.getText());
+                //formato de data mais amigável
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                LocalDateTime agora = LocalDateTime.now();
+                System.out.println();
+                //segue o jogo
+                objResult.setData(dtf.format(agora));
+                objResult.setGanhador(ganhador);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference ref = database.getReference("sorteio");
+
+                DatabaseReference usersRef = ref.child(id);
+                usersRef.setValueAsync(objResult);
+
+                edtNomeSorteio.setText("");
             }
+        } else {
+            Component frame = null;
+            JOptionPane.showMessageDialog(frame,
+                    "Arquivo CSV inválido!");
         }
 
     }//GEN-LAST:event_btnSortearMouseReleased
@@ -213,9 +308,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
                 new TelaPrincipal().setVisible(true);
+            } catch (IOException ex) {
+                Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
@@ -223,8 +320,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrirArq;
     private javax.swing.JButton btnSortear;
+    private javax.swing.JTextField edtNomeSorteio;
     private javax.swing.JFileChooser jFileChooser;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     public javax.swing.JPanel jPanelParent;
     private javax.swing.JLabel txtArqNome;
     private javax.swing.JLabel txtGanhador;
